@@ -1,0 +1,106 @@
+-- TABLA PROVEEDORES
+
+CREATE TABLE PROVEEDORES (
+    IDProveedor NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Nombre VARCHAR2(100) NOT NULL,
+    Telefono VARCHAR2(20),
+    Email VARCHAR2(100),
+    Direccion VARCHAR2(200),
+    Estado NUMBER(1) DEFAULT 1
+);
+
+
+-- TABLA CLIENTES
+
+CREATE TABLE CLIENTES (
+    IDCliente NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Nombre VARCHAR2(100) NOT NULL,
+    Telefono VARCHAR2(20),
+    Email VARCHAR2(100),
+    Direccion VARCHAR2(200)
+);
+
+
+-- TABLA PRODUCTOS
+
+CREATE TABLE PRODUCTOS (
+    IDProducto NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Nombre VARCHAR2(100) NOT NULL,
+    Descripcion VARCHAR2(200),
+    PrecioVenta NUMBER(10,2) NOT NULL,
+    StockActual NUMBER,
+    StockMinimo NUMBER,
+    IDProveedor NUMBER,
+
+    CONSTRAINT fk_producto_proveedor
+    FOREIGN KEY (IDProveedor)
+    REFERENCES PROVEEDORES(IDProveedor)
+);
+
+
+-- TABLA VENTAS
+
+CREATE TABLE VENTAS (
+    IDVenta NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Fecha DATE DEFAULT SYSDATE,
+    IDCliente NUMBER,
+    TotalVenta NUMBER(10,2),
+
+    CONSTRAINT fk_venta_cliente
+    FOREIGN KEY (IDCliente)
+    REFERENCES CLIENTES(IDCliente)
+);
+
+
+-- TABLA DETALLE_VENTA
+
+CREATE TABLE DETALLE_VENTA (
+    IDDetalleVenta NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    IDVenta NUMBER,
+    IDProducto NUMBER,
+    Cantidad NUMBER,
+    PrecioUnitario NUMBER(10,2),
+    Subtotal NUMBER(10,2),
+
+    CONSTRAINT fk_detalleventa_venta
+    FOREIGN KEY (IDVenta)
+    REFERENCES VENTAS(IDVenta),
+
+    CONSTRAINT fk_detalleventa_producto
+    FOREIGN KEY (IDProducto)
+    REFERENCES PRODUCTOS(IDProducto)
+);
+
+
+-- TABLA COMPRAS
+
+CREATE TABLE COMPRAS (
+    IDCompra NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Fecha DATE DEFAULT SYSDATE,
+    IDProveedor NUMBER,
+    TotalCompra NUMBER(10,2),
+
+    CONSTRAINT fk_compra_proveedor
+    FOREIGN KEY (IDProveedor)
+    REFERENCES PROVEEDORES(IDProveedor)
+);
+
+
+-- TABLA DETALLE_COMPRA
+
+CREATE TABLE DETALLE_COMPRA (
+    IDDetalleCompra NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    IDCompra NUMBER,
+    IDProducto NUMBER,
+    Cantidad NUMBER,
+    PrecioCompra NUMBER(10,2),
+    Subtotal NUMBER(10,2),
+
+    CONSTRAINT fk_detallecompra_compra
+    FOREIGN KEY (IDCompra)
+    REFERENCES COMPRAS(IDCompra),
+
+    CONSTRAINT fk_detallecompra_producto
+    FOREIGN KEY (IDProducto)
+    REFERENCES PRODUCTOS(IDProducto)
+);
