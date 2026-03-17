@@ -1,4 +1,3 @@
--- Restar stock en ventas
 CREATE OR REPLACE TRIGGER trg_restar_stock_venta
 AFTER INSERT ON DETALLE_VENTA
 FOR EACH ROW
@@ -9,7 +8,6 @@ BEGIN
 END;
 /
 
--- Sumar stock en compras
 CREATE OR REPLACE TRIGGER trg_sumar_stock_compra
 AFTER INSERT ON DETALLE_COMPRA
 FOR EACH ROW
@@ -20,7 +18,6 @@ BEGIN
 END;
 /
 
--- Evitar stock negativo
 CREATE OR REPLACE TRIGGER trg_evitar_stock_negativo
 BEFORE UPDATE ON PRODUCTOS
 FOR EACH ROW
@@ -31,8 +28,8 @@ BEGIN
 END;
 /
 
--- Validar precio
-CREATE OR REPLACE TRIGGER trg_validar_precio_producto
+
+    CREATE OR REPLACE TRIGGER trg_validar_precio_producto
 BEFORE INSERT OR UPDATE ON PRODUCTOS
 FOR EACH ROW
 BEGIN
@@ -42,7 +39,7 @@ BEGIN
 END;
 /
 
--- Log de ventas (simple)
+
 CREATE OR REPLACE TRIGGER trg_log_venta
 AFTER INSERT ON VENTAS
 FOR EACH ROW
