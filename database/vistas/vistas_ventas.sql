@@ -1,4 +1,3 @@
--- Vista de ventas
 CREATE OR REPLACE VIEW vw_ventas AS
 SELECT 
     v.IDVenta,
@@ -8,7 +7,6 @@ SELECT
 FROM VENTAS v
 JOIN CLIENTES c ON v.IDCliente = c.IDCliente;
 
--- Ventas por mes
 CREATE OR REPLACE VIEW vw_ventas_por_mes AS
 SELECT 
     TO_CHAR(Fecha, 'YYYY-MM') AS Mes,
@@ -16,7 +14,6 @@ SELECT
 FROM VENTAS
 GROUP BY TO_CHAR(Fecha, 'YYYY-MM');
 
--- Productos más vendidos
 CREATE OR REPLACE VIEW vw_productos_mas_vendidos AS
 SELECT 
     p.Nombre,
