@@ -57,12 +57,12 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE sp_listar_productos
+CREATE OR REPLACE PROCEDURE SP_LISTAR_PRODUCTOS (
+    p_cursor OUT SYS_REFCURSOR
+)
 AS
 BEGIN
-    FOR r IN (SELECT * FROM PRODUCTOS)
-    LOOP
-        DBMS_OUTPUT.PUT_LINE(r.IDProducto || ' - ' || r.Nombre);
-    END LOOP;
+    OPEN p_cursor FOR
+    SELECT * FROM PRODUCTOS;
 END;
 /

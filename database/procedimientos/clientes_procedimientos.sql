@@ -51,12 +51,12 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE sp_listar_clientes
+CREATE OR REPLACE PROCEDURE SP_LISTAR_CLIENTES (
+    p_cursor OUT SYS_REFCURSOR
+)
 AS
 BEGIN
-    FOR r IN (SELECT * FROM CLIENTES)
-    LOOP
-        DBMS_OUTPUT.PUT_LINE(r.IDCliente || ' - ' || r.Nombre);
-    END LOOP;
+    OPEN p_cursor FOR
+    SELECT * FROM CLIENTES;
 END;
 /
