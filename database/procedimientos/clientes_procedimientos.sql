@@ -11,21 +11,31 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE sp_actualizar_cliente(
-    p_idcliente NUMBER,
+CREATE OR REPLACE PROCEDURE SP_ACTUALIZAR_CLIENTE (
+    p_id NUMBER,
     p_nombre VARCHAR2,
     p_telefono VARCHAR2,
     p_email VARCHAR2,
     p_direccion VARCHAR2
 )
 AS
+    v_count NUMBER;
 BEGIN
+    SELECT COUNT(*) INTO v_count
+    FROM CLIENTES
+    WHERE IDCliente = p_id;
+
+    IF v_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'El cliente no existe');
+    END IF;
+
     UPDATE CLIENTES
     SET Nombre = p_nombre,
         Telefono = p_telefono,
         Email = p_email,
         Direccion = p_direccion
-    WHERE IDCliente = p_idcliente;
+    WHERE IDCliente = p_id;
+
 END;
 /
 
@@ -58,5 +68,17 @@ AS
 BEGIN
     OPEN p_cursor FOR
     SELECT * FROM CLIENTES;
+END;
+/
+CREATE OR REPLACE PROCEDURE SP_EXISTE_CLIENTE (
+    p_id NUMBER,
+    p_existe OUT NUMBER
+)
+AS
+BEGIN
+    SELECT COUNT(*)
+    INTO p_existe
+    FROM CLIENTES
+    WHERE IDCliente = p_id;
 END;
 /
