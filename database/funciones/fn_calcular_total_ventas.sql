@@ -5,7 +5,7 @@ RETURN NUMBER
 AS
     v_total NUMBER;
 BEGIN
-    SELECT SUM(Subtotal)
+    SELECT NVL(SUM(Subtotal),0)
     INTO v_total
     FROM DETALLE_VENTA
     WHERE IDVenta = p_idventa;

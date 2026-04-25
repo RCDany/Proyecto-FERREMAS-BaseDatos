@@ -1,11 +1,33 @@
 CREATE OR REPLACE PROCEDURE sp_crear_venta(
     p_idcliente NUMBER,
-    p_totalventa NUMBER
+    p_idventa OUT NUMBER
 )
 AS
 BEGIN
-    INSERT INTO VENTAS(IDCliente, TotalVenta)
-    VALUES(p_idcliente, p_totalventa);
+    INSERT INTO VENTAS(IDCliente)
+    VALUES(p_idcliente)
+    RETURNING IDVenta INTO p_idventa;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE sp_listar_ventas(
+    p_cursor OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_cursor FOR
+    SELECT * FROM VENTAS;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE sp_obtener_venta(
+    p_idventa NUMBER,
+    p_cursor OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+    OPEN p_cursor FOR
+    SELECT * FROM VENTAS WHERE IDVenta = p_idventa;
 END;
 /
 
@@ -14,29 +36,18 @@ CREATE OR REPLACE PROCEDURE sp_eliminar_venta(
 )
 AS
 BEGIN
+    DELETE FROM DETALLE_VENTA
+    WHERE IDVenta = p_idventa;
+
+    IF SQL%ROWCOUNT = 0 THEN
+        NULL; -- puede no tener detalles, no pasa nada
+    END IF;
+
     DELETE FROM VENTAS
     WHERE IDVenta = p_idventa;
-END;
-/
 
-CREATE OR REPLACE PROCEDURE sp_obtener_venta(
-    p_idventa NUMBER
-)
-AS
-BEGIN
-    FOR r IN (SELECT * FROM VENTAS WHERE IDVenta = p_idventa)
-    LOOP
-        DBMS_OUTPUT.PUT_LINE('Venta ' || r.IDVenta || ' Total: ' || r.TotalVenta);
-    END LOOP;
-END;
-/
-
-CREATE OR REPLACE PROCEDURE sp_listar_ventas
-AS
-BEGIN
-    FOR r IN (SELECT * FROM VENTAS)
-    LOOP
-        DBMS_OUTPUT.PUT_LINE('Venta ' || r.IDVenta || ' Cliente ' || r.IDCliente);
-    END LOOP;
+    IF SQL%ROWCOUNT = 0 THEN
+        RAISE_APPLICATION_ERROR(-20070, 'Venta no existe');
+    END IF;
 END;
 /

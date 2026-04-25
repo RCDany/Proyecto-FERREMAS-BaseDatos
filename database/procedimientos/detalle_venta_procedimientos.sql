@@ -1,14 +1,29 @@
 CREATE OR REPLACE PROCEDURE sp_agregar_detalle_venta(
     p_idventa NUMBER,
     p_idproducto NUMBER,
-    p_cantidad NUMBER,
-    p_preciounitario NUMBER,
-    p_subtotal NUMBER
+    p_cantidad NUMBER
 )
 AS
+    v_precio NUMBER;
 BEGIN
-    INSERT INTO DETALLE_VENTA(IDVenta, IDProducto, Cantidad, PrecioUnitario, Subtotal)
-    VALUES(p_idventa, p_idproducto, p_cantidad, p_preciounitario, p_subtotal);
+    SELECT PrecioVenta INTO v_precio
+    FROM PRODUCTOS
+    WHERE IDProducto = p_idproducto;
+
+    INSERT INTO DETALLE_VENTA(
+        IDVenta,
+        IDProducto,
+        Cantidad,
+        PrecioUnitario,
+        Subtotal
+    )
+    VALUES(
+        p_idventa,
+        p_idproducto,
+        p_cantidad,
+        v_precio,
+        v_precio * p_cantidad
+    );
 END;
 /
 
@@ -21,12 +36,23 @@ BEGIN
     WHERE IDDetalleVenta = p_iddetalle;
 END;
 /
-CREATE OR REPLACE PROCEDURE SP_LISTAR_DETALLE_VENTA (
+
+CREATE OR REPLACE PROCEDURE sp_listar_detalle_venta(
+    p_idventa NUMBER,
     p_cursor OUT SYS_REFCURSOR
 )
 AS
 BEGIN
     OPEN p_cursor FOR
-    SELECT * FROM DETALLE_VENTA;
+    SELECT 
+        d.IDDetalleVenta,
+        d.IDProducto,
+        p.Nombre,
+        d.Cantidad,
+        d.PrecioUnitario,
+        d.Subtotal
+    FROM DETALLE_VENTA d
+    JOIN PRODUCTOS p ON d.IDProducto = p.IDProducto
+    WHERE d.IDVenta = p_idventa;
 END;
 /
