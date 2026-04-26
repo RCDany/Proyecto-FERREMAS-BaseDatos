@@ -3,7 +3,7 @@ from productos import menu_productos
 from proveedores import menu_proveedores
 from ventas import menu_ventas
 from reportes import menu_reportes
-
+from extras import menu_extras
 
 def main():
     while True:
@@ -14,7 +14,8 @@ def main():
     3. Proveedores
     4. Ventas
     5. Reportes
-    6. Salir
+    6. Funciones extra
+    7. Salir
         """)
 
         opcion = input("Seleccione: ")
@@ -35,6 +36,9 @@ def main():
             menu_reportes()
 
         elif opcion == "6":
+            menu_extras()
+
+        elif opcion == "7":
             print("Saliendo del sistema...")
             break
 
